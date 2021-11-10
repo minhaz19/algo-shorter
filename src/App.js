@@ -1,32 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './App.css';
 import axios from 'axios';
+import swal from 'sweetalert';
 
 function App() {
   const [url, setUrl] = useState({})
   const [newUrl, setNewUrl] = useState([])
-  const [error, setError] = useState([])
-  console.log(url)
+
   const handleBlur = (e) => {
     const searchUrl = e.target.value;
     setUrl(searchUrl);
   }
   const handleSubmit = (e) => {
     e.preventDefault()
-    axios.post("https://immense-everglades-26400.herokuapp.com/api/make/shortendUrl", {url: url})
+    axios.post("https://immense-everglades-26400.herokuapp.com/api/make/shortendUrl", { url: url })
       .then(res => {
-        if(res){
+        if (res.data.url) {
           setNewUrl(res.data.url.shortendUrl)
         }
-        else{
-          error(res.data.error)
+        else {
+          swal("Failed!", res.data.error, "error")
         }
       })
   }
-//   useEffect(() => {
-//     axios(`http://localhost:5000/flightBooking`)
-//     .then(res => setNewUrl(res.data.result))
-// }, [])
 
   return (
 
@@ -44,7 +40,6 @@ function App() {
               <button type="submit" className="btn btn-success search-btn">Search</button>
             </form>
           </div>
-          {error && <p className="text-danger">{error}</p>}
           {newUrl && <h3>Sort url: <a target="_blank" href={url}>{newUrl}</a></h3>}
         </div>
       </div >
